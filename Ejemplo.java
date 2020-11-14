@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class Conexion {
+public class Ejemplo {
     private String user;
     private String password;
     private String db;
@@ -10,7 +10,7 @@ public class Conexion {
     private Statement stm;
     private ResultSet rs;
 
-    public Conexion(String usuario, String contraseña, String bd, String servidor) {
+    public Ejemplo(String usuario, String contraseña, String bd, String servidor) {
         this.user = usuario;
         this.password = contraseña;
         this.db = bd;
