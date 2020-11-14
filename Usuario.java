@@ -1,4 +1,4 @@
-
+import java.sql.SQLException;
 
 public class Usuario{
 
@@ -11,6 +11,11 @@ public class Usuario{
 
         //Me conecto a la BD
         base_datos.conectar();
-        base_datos.mostrarTablas();
+        try{base_datos.mostrarTablas();}
+        catch (SQLException e)
+        {
+            System.out.println("Error imprimiendo las tablas");
+        }
+    
     }
 }

@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class MiBaseDatos{
-    private Connection conn = null;
+    private Connection conexion = null;
     private Statement sentencia;
     private ResultSet resultado_sentencia;
     private String usuario;
@@ -15,12 +15,12 @@ public class MiBaseDatos{
     }
 
     public void conectar(){
-        try (Connection conn = DriverManager.getConnection(nombre_bd, usuario, contraseña)) 
+        try (Connection conexion = DriverManager.getConnection(nombre_bd, usuario, contraseña)) 
         {
-            if (conn != null) {
+            if (conexion != null) {
                 System.out.println("Te has conectado a la BD " + nombre_bd + ", con el usuario " + usuario);
                 //Para poder ejecutar sentencias de SQL
-                sentencia = conn.createStatement();
+                sentencia = conexion.createStatement();
             } else {
                 System.out.println("Failed to make connection!");
             }
