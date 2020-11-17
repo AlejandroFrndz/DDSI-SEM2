@@ -48,6 +48,35 @@ public class MiBaseDatos{
         }
         System.out.println("Las tablas de la base de datos son las siguientes: " + nombre_tablas);
     }
+
+    public void insertarTuplasPredefinidas() throws SQLException
+    {
+
+    }
+
+    public void crearTabla() throws SQLException
+    {
+
+    }
+
+    public void borrarTabla() throws SQLException
+    {
+
+    }
+
+    public void darAltaPedido() throws SQLException
+    {
+        
+    }
+
+    public void borrarPedido() throws SQLException{
+
+    }
+
+    public void cerrarConexion() throws SQLException
+    {
+ 
+    }
    
     //Para imprimir resultado de una sentencia: https://coderwall.com/p/609ppa/printing-the-result-of-resultset
     public void imprimirResultSet(ResultSet rs) throws SQLException 
