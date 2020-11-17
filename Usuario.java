@@ -16,6 +16,15 @@ public class Usuario{
         {
             System.out.println("Error imprimiendo las tablas");
         }
+
+        /*
+        try{base_datos.insertarTuplasPredefinidas();}
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error insertando las tuplas predefinidas en Stock");
+        }
+        */
     
     }
 }

@@ -52,16 +52,16 @@ public class MiBaseDatos{
     public void insertarTuplasPredefinidas() throws SQLException
     {
         //Insertar 10 tuplas predefinidas en la tabla Stock
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('1', '5)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('2', '15)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('3', '3)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('4', '5)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('5', '8)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('6', '10)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('7', '26)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('8', '1)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('9', '9)");
-        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('10', '30)");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('1', '5')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('2', '15')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('3', '3')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('4', '5')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('5', '8')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('6', '10')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('7', '26')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('8', '1')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('9', '9')");
+        sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('10', '30')");
 
     }
 
