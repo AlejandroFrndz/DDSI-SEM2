@@ -48,7 +48,7 @@ public class MiBaseDatos{
         }
         System.out.println("Las tablas de la base de datos son las siguientes: " + nombre_tablas);
     }
-
+ 
     public void insertarTuplasPredefinidas() throws SQLException
     {
 
@@ -66,7 +66,7 @@ public class MiBaseDatos{
 
     public void darAltaPedido() throws SQLException
     {
-        
+
     }
 
     public void borrarPedido() throws SQLException{
