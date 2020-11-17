@@ -34,8 +34,19 @@ public class MiBaseDatos{
     {
         //ExecuteQuery se usa para sentencias SQL que devuelven un resultado
         resultado_sentencia = sentencia.executeQuery("SELECT table_name FROM user_tables");
-        System.out.println("Las tablas de la base de datos son las siguientes: ");
-        imprimirResultSet(resultado_sentencia);
+        String nombre_tablas = "";
+        
+        while(resultado_sentencia.next()) //Recorre cada fila de la salida
+        {
+            //Como la salida tiene dos columnas, ej: DETALLE_PEDIDO TABLE_NAME
+            //Nos quedamos con la primera columna, que es el nombre de la tabla.
+            String nombre = resultado_sentencia.getString(1);
+            if(nombre_tablas.isEmpty())
+                nombre_tablas += nombre;
+            else
+                nombre_tablas += ", " + nombre;
+        }
+        System.out.println("Las tablas de la base de datos son las siguientes: " + nombre_tablas);
     }
    
     //Para imprimir resultado de una sentencia: https://coderwall.com/p/609ppa/printing-the-result-of-resultset
