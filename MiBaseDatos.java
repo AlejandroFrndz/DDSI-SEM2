@@ -15,17 +15,16 @@ public class MiBaseDatos{
     }
 
     public void conectar(){
-        try (Connection conexion = DriverManager.getConnection(nombre_bd, usuario, contraseña)) 
+        try 
         {
+            conexion = DriverManager.getConnection(nombre_bd, usuario, contraseña);
             if (conexion != null) {
-                System.out.println("Te has conectado a la BD " + nombre_bd + ", con el usuario " + usuario);
+                System.out.println("\nTe has conectado a la BD " + nombre_bd + " con el usuario " + usuario + "\n");
                 //Para poder ejecutar sentencias de SQL
                 sentencia = conexion.createStatement();
-            } else {
-                System.out.println("Failed to make connection!");
-            }
+            } 
         } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            System.err.format("No se ha podido conectar a la base de datos");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -35,6 +34,7 @@ public class MiBaseDatos{
     {
         //ExecuteQuery se usa para sentencias SQL que devuelven un resultado
         resultado_sentencia = sentencia.executeQuery("SELECT table_name FROM user_tables");
+        System.out.println("Las tablas de la base de datos son las siguientes: ");
         imprimirResultSet(resultado_sentencia);
     }
    
