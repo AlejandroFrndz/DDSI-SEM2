@@ -1,6 +1,6 @@
 #//////////////////////////////////////////////////////////////////
 #	Joaquín García Venegas                                       
-#	 Francisco José Aparicio Martos                               
+#	Francisco José Aparicio Martos                               
 #	Joaquín Alejandro España Sánchez                             
 #	Alejandro Fernández Alcaide  
 #	Victor Díaz Bustos                                           
@@ -10,7 +10,7 @@
 # 	Fichero: Makefile			                                 
 #//////////////////////////////////////////////////////////////////
 
-all: compilar usuario
+all: informacion compilar usuario
 
 #####################################################
 # Regla que muestra información sobre el proyecto 
@@ -32,7 +32,7 @@ informacion:
 # Compilar los archivos fuente
 #####################################################
 compilar:
-	@echo ---Compilacion---
+	@echo Compilando...
 	javac ./*.java 
 
 
@@ -41,8 +41,8 @@ compilar:
 #####################################################
 usuario:
 	@echo 
-	@echo ---Ejecucion del programa-----
-	java -cp ojdbc8.jar:. Usuario	
+	@echo Ejecutando aplicación...
+	@java -cp ojdbc8.jar:. Usuario	
 
 
 #####################################################
