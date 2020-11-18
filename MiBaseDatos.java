@@ -30,7 +30,7 @@ public class MiBaseDatos{
         }
     }
 
-    public void mostrarTablas() throws SQLException 
+    public void mostrarNombreTablas() throws SQLException         // FUNCIONA
     {
         //ExecuteQuery se usa para sentencias SQL que devuelven un resultado
         resultado_sentencia = sentencia.executeQuery("SELECT table_name FROM user_tables");
@@ -49,7 +49,7 @@ public class MiBaseDatos{
         System.out.println("Las tablas de la base de datos son las siguientes: " + nombre_tablas);
     }
  
-    public void insertarTuplasPredefinidas() throws SQLException
+    public void insertarTuplasPredefinidas() throws SQLException            // FUNCIONA
     {
         //Insertar 10 tuplas predefinidas en la tabla Stock
         sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('1', '5')");
@@ -65,40 +65,91 @@ public class MiBaseDatos{
 
     }
 
-    public void crearTabla() throws SQLException
+    public void crearTablas() throws SQLException               // FUNCIONA
     {
-
+        // Crear las tablas de nuestro SI
+        // Tabla Stock
+        sentencia.execute("CREATE TABLE Stock(Cproducto NUMBER PRIMARY KEY, Cantidad NUMBER)");
+        // Tabla Pedido
+        sentencia.execute("CREATE TABLE Pedido(Cpedido NUMBER PRIMARY KEY, Ccliente NUMBER, Fecha_pedido DATE)");
+        // Tabla Detalle_pedido
+        sentencia.execute("CREATE TABLE Detalle_pedido(Cpedido REFERENCES Pedido(Cpedido), Cproducto REFERENCES Stock(Cproducto), Cantidad NUMBER, PRIMARY KEY(Cpedido, Cproducto) )");
     }
 
-    public void borrarTabla() throws SQLException
+    public void borrarTablas() throws SQLException              // FUNCIONA
     {
+        // Eliminar las tablas del SI
+        // Tabla Detalle_pedido
+        sentencia.execute("DROP TABLE Detalle_pedido");
+        
+        // Tabla Stock
+        sentencia.execute("DROP TABLE Stock");
+        
+        // Tabla Pedido
+        sentencia.execute("DROP TABLE Pedido");
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // FUNCIONES NECESARIAS PARA LA TRANSACCIÓN DAR DE ALTA NUEVO PEDIDO
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void insertarPedido(String cpedido, String ccliente ) throws SQLException
+    {
+        // Añadir los datos del pedido capturados en la interfaz 
+        sentencia.execute("INSERT INTO PEDIDO VALUES(" + cpedido + "," + ccliente + ", SYSDATE)");      // Como fecha_pedido es la fecha en la que se realiza el pedido
+    }                                                                                                   // le damos el  valor de la fecha del sistema SYSDATE 
 
+    public void insertarDetalle_pedido(String cpedido, String cproducto, String cantidad) throws SQLException
+    {
+        // Añadir los datos del pedido capturados en la interfaz 
+        sentencia.execute("INSERT INTO Detalle_pedido VALUES(" + cpedido + "," + cproducto + ", " + cantidad + ")");                                                                                                                        
     }
 
-    public void darAltaPedido() throws SQLException
+    public void elminarDetallesPedido(String Cpedido, String Cproducto) throws SQLException
     {
-
+        sentencia.execute("DELETE FROM Detalle_pedido WHERE Cpedido=" + Cpedido + " AND Cproducto=" + Cproducto);
     }
 
-    public void borrarPedido() throws SQLException{
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Este método se utilizará para la opción dar alta nuevo pedido y borrar un pedido 
+    public void borrarPedido(String Cpedido) throws SQLException
+    {
+        //Borrar en cascada
+            //Primero borrar en Detalle_pedido     
+            sentencia.execute("DELETE FROM Detalle_pedido WHERE Cpedido=" + Cpedido);
+           
+            //Borrar en Pedido
+            sentencia.execute("DELETE FROM Pedido WHERE Cpedido=" + Cpedido);
     }
 
     public void cerrarConexion() throws SQLException
     {
- 
+        // Cerramos conexión con la BD
+        sentencia.close();
+        conexion.close();
     }
+
    
-    //Para imprimir resultado de una sentencia: https://coderwall.com/p/609ppa/printing-the-result-of-resultset
-    public void imprimirResultSet(ResultSet rs) throws SQLException 
+    public void imprimirContenidoTabla(String tabla) throws SQLException 
     {
-        ResultSetMetaData rsmd = rs.getMetaData();
+        resultado_sentencia = sentencia.executeQuery("SELECT * FROM " + tabla);
+        ResultSetMetaData rsmd = resultado_sentencia.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
-        while (rs.next()) {
+        
+        // Formar la cadena que contendrá el nombre de las columnas
+        String nombre_columnas="";
+        for(int i=1; i<=rsmd.getColumnCount(); i++){
+            nombre_columnas = nombre_columnas + "|" + rsmd.getColumnName(i) + "|\t";
+        }
+        System.out.println(nombre_columnas);     // Imprimir las columnas de la tabla
+        
+        //Imprimir el contenido
+        while (resultado_sentencia.next()) {
             for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(",  ");
-                String columnValue = rs.getString(i);
-                System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                if (i > 1) System.out.print("\t\t");
+                String columnValue = resultado_sentencia.getString(i);
+                System.out.print("    " + columnValue);
             }
             System.out.println("");
         }

@@ -11,20 +11,28 @@ public class Usuario{
 
         //Me conecto a la BD
         base_datos.conectar();
-        try{base_datos.mostrarTablas();}
+        
+        // Creación de tablas
+        try{base_datos.crearTablas();}
         catch (SQLException e)
         {
-            System.out.println("Error imprimiendo las tablas");
+            e.printStackTrace();
+            System.out.println("Error creando las tablas");
         }
-
-        /*
+        
         try{base_datos.insertarTuplasPredefinidas();}
         catch (SQLException e)
         {
             e.printStackTrace();
             System.out.println("Error insertando las tuplas predefinidas en Stock");
         }
-        */
-    
+        
+        
+        try{base_datos.imprimirContenidoTabla("Stock");}
+        catch (SQLException e)
+        {
+            System.out.println("Error imprimiendo las tablas");
+        }
+        
     }
 }
