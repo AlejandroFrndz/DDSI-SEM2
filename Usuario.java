@@ -4,7 +4,7 @@ public class Usuario{
     // victor x0227576
     // paco x2233897
     // alex.fdz x6591260
-    private static String usuario = "x6591260";
+    private static String usuario = "x0227576";
     private static MiBaseDatos base_datos = new MiBaseDatos("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", usuario, usuario);
     private static Color colores = new Color();
 
