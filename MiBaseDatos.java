@@ -14,19 +14,20 @@ public class MiBaseDatos{
         this.contraseña = contraseña;
     }
 
-    public void conectar(){
+    public Boolean conectar(){
         try 
         {
             conexion = DriverManager.getConnection(nombre_bd, usuario, contraseña);
+            conexion.setAutoCommit(false);
             if (conexion != null) {
                 System.out.println("\nTe has conectado a la BD " + nombre_bd + " con el usuario " + usuario + "\n");
                 //Para poder ejecutar sentencias de SQL
                 sentencia = conexion.createStatement();
-            } 
+            }
+            return true;
         } catch (SQLException e) {
-            System.err.format("No se ha podido conectar a la base de datos");
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.err.format("No se ha podido conectar a la base de datos\n");
+            return false;
         }
     }
 
@@ -62,6 +63,7 @@ public class MiBaseDatos{
         sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('8', '1')");
         sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('9', '9')");
         sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('10', '30')");
+        sentencia.execute("COMMIT");
 
     }
 
@@ -69,11 +71,11 @@ public class MiBaseDatos{
     {
         // Crear las tablas de nuestro SI
         // Tabla Stock
-        sentencia.execute("CREATE TABLE Stock(Cproducto NUMBER PRIMARY KEY, Cantidad NUMBER)");
+        sentencia.execute("CREATE TABLE Stock(Cproducto NUMBER CONSTRAINT CP_Stock PRIMARY KEY, Cantidad INT CONSTRAINT cantidad_positiva_STOCK CHECK( Cantidad >= 0) )");
         // Tabla Pedido
-        sentencia.execute("CREATE TABLE Pedido(Cpedido NUMBER PRIMARY KEY, Ccliente NUMBER, Fecha_pedido DATE)");
+        sentencia.execute("CREATE TABLE Pedido(Cpedido NUMBER CONSTRAINT CP_Pedido PRIMARY KEY, Ccliente NUMBER, Fecha_pedido DATE)");
         // Tabla Detalle_pedido
-        sentencia.execute("CREATE TABLE Detalle_pedido(Cpedido REFERENCES Pedido(Cpedido), Cproducto REFERENCES Stock(Cproducto), Cantidad NUMBER, PRIMARY KEY(Cpedido, Cproducto) )");
+        sentencia.execute("CREATE TABLE Detalle_pedido(Cpedido CONSTRAINT CE_Detalle_Cpedido REFERENCES Pedido(Cpedido) , Cproducto CONSTRAINT CE_Detalle_Cproducto REFERENCES Stock(Cproducto), Cantidad INT CONSTRAINT cantidad_positiva_DETALLE CHECK (Cantidad > 0), CONSTRAINT CP_Detalle PRIMARY KEY(Cpedido, Cproducto) )");
     }
 
     public void borrarTablas() throws SQLException              // FUNCIONA
@@ -94,13 +96,16 @@ public class MiBaseDatos{
     public void insertarPedido(String cpedido, String ccliente ) throws SQLException
     {
         // Añadir los datos del pedido capturados en la interfaz 
-        sentencia.execute("INSERT INTO PEDIDO VALUES(" + cpedido + "," + ccliente + ", SYSDATE)");      // Como fecha_pedido es la fecha en la que se realiza el pedido
-    }                                                                                                   // le damos el  valor de la fecha del sistema SYSDATE 
+        sentencia.execute("INSERT INTO PEDIDO VALUES(" + cpedido + "," + ccliente + ", SYSDATE)");      // Como fecha_pedido es la fecha en la que se realiza el pedido le damos el  valor de la fecha del sistema SYSDATE 
+        sentencia.execute("SAVEPOINT Pedido");
+    }                                                                                                   
 
     public void insertarDetalle_pedido(String cpedido, String cproducto, String cantidad) throws SQLException
     {
+        sentencia.execute("UPDATE Stock SET Cantidad = Cantidad-" + cantidad + " WHERE Cproducto=" + cproducto);                                                                                                                       
+
         // Añadir los datos del pedido capturados en la interfaz 
-        sentencia.execute("INSERT INTO Detalle_pedido VALUES(" + cpedido + "," + cproducto + ", " + cantidad + ")");                                                                                                                        
+        sentencia.execute("INSERT INTO Detalle_pedido VALUES(" + cpedido + "," + cproducto + ", " + cantidad + ")");
     }
 
     public void elminarDetallesPedido(String Cpedido, String Cproducto) throws SQLException
@@ -108,6 +113,17 @@ public class MiBaseDatos{
         sentencia.execute("DELETE FROM Detalle_pedido WHERE Cpedido=" + Cpedido + " AND Cproducto=" + Cproducto);
     }
 
+    public void commit() throws SQLException{
+        sentencia.execute("COMMIT");
+    }
+
+    public void rollback() throws SQLException{
+        sentencia.execute("ROLLBACK");
+    }
+
+    public void rollbackTo(String savepoint) throws SQLException{
+        sentencia.execute("ROLLBACK TO " + savepoint);
+    }
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +137,8 @@ public class MiBaseDatos{
            
             //Borrar en Pedido
             sentencia.execute("DELETE FROM Pedido WHERE Cpedido=" + Cpedido);
+
+            sentencia.execute("COMMIT");
     }
 
     public void cerrarConexion() throws SQLException
