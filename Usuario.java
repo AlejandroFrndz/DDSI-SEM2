@@ -8,7 +8,7 @@ public class Usuario{
     private static MiBaseDatos base_datos = new MiBaseDatos("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", usuario, usuario);
     private static Color colores = new Color();
 
-    //Función para ejecutar el borrado y creación de las tablas y la inserción de las tuplas predeterminadas
+    //Función para ejecutar el borrado, creación de las tablas y la inserción de las tuplas predeterminadas
     public static void borradoInsercion(){
         // Borrar las tablas
         try{base_datos.borrarTablas();}
@@ -45,7 +45,7 @@ public class Usuario{
     //Función para eliminar un pedido con sus detalles en cascada
     private static void borrarPedido(){
         // Borrar un pedido
-        System.out.println(colores.cyan + "Introduzca la clave del pedido que desea borrar" + colores.reset);
+        System.out.print(colores.cyan + "Introduzca la clave del pedido que desea borrar: " + colores.reset);
         String cpedido = System.console().readLine();
 
         try{base_datos.borrarPedido(cpedido);}      // Borrar el pedido identificado por "cpedido"
@@ -71,9 +71,9 @@ public class Usuario{
         String cPedido, cCliente, opcion;
         
         
-        System.out.println("Introduzca el código del pedido:");
+        System.out.print(colores.cyan + "Introduzca el código del pedido: " + colores.reset);
         cPedido = System.console().readLine();
-        System.out.println("Introduzca el código del cliente:");
+        System.out.print(colores.cyan + "Introduzca el código del cliente: " + colores.reset);
         cCliente = System.console().readLine();
 
         // INSERTA PEDIDO EN LA TABLA
@@ -133,18 +133,41 @@ public class Usuario{
     }
 
     public static void aniadirDetalleProducto(String cPedido){
-        String cProducto, cantidad;
-        
-        System.out.println("Introduzca el codigo del producto");
+        String cProducto, cantidad = "";
+        boolean quedaStock = true;
+        boolean stockCorrecto = false;
+
+        System.out.print(colores.cyan + "Introduzca el codigo del producto: " + colores.reset);
         cProducto = System.console().readLine();
-        System.out.println("Introduzca la cantidad que desea");
-        cantidad = System.console().readLine();
-        
-        try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
-        catch (SQLException e)
-        {
-            System.out.println(colores.red + "Error insetando detalles del pedido " + cPedido + colores.reset);
-        } 
+
+        // Comprobar si quedan existencias del producto
+        try {
+            quedaStock = base_datos.hayStock(cProducto);
+        } catch (Exception e) {
+            System.out.println("Error comprobando el Stock del producto" + cProducto);
+        }
+
+        if(quedaStock){
+            // Pedir el Stock hasta que se introduzca un stock disponible
+            while(!stockCorrecto){
+                System.out.print(colores.cyan + "Introduzca la cantidad que desea: " + colores.reset);
+                cantidad = System.console().readLine();
+                
+                try{stockCorrecto = base_datos.stockSuficiente(cProducto, cantidad);}
+                catch(SQLException e){
+                    System.out.println("Hubo un error al comprobar el stock");
+                }
+            }
+            
+            try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
+            catch (SQLException e)
+            {
+                System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+            }
+        }
+        else{
+            System.out.println("Lo sentimos, no queda stock de este producto");
+        }
     }
 
     public static void imprimirTablas(){

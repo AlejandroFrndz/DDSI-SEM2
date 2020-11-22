@@ -148,6 +148,48 @@ public class MiBaseDatos{
         conexion.close();
     }
 
+
+    // Función que comprueba si hay Stock de un producto
+    public boolean hayStock(String cproducto) throws SQLException
+    {
+        // Sacamos la cantidad de Stock que hay para ese producto
+        resultado_sentencia = sentencia.executeQuery("SELECT Cantidad FROM Stock WHERE Cproducto=" + cproducto);
+        resultado_sentencia.next();     // resultado que buscamos
+
+        // Comprobar que la cantidad introducida sea mayor que 0
+        if(Integer.parseInt(resultado_sentencia.getString(1)) == 0)
+            return false;
+        
+        return true;
+    }
+
+
+
+    // Función que comprueba si hay Stock suficiente de un producto
+    public boolean stockSuficiente(String cproducto, String cantidad) throws SQLException
+    {
+        boolean correcto = true;
+
+        // Sacamos la cantidad de Stock que hay para ese producto
+        resultado_sentencia = sentencia.executeQuery("SELECT Cantidad FROM Stock WHERE Cproducto=" + cproducto);
+        resultado_sentencia.next();     // resultado que buscamos
+
+        // Comprobar que la cantidad introducida sea mayor que 0
+        if(Integer.parseInt(cantidad) > 0){
+            if(Integer.parseInt(resultado_sentencia.getString(1)) < Integer.parseInt(cantidad)) {       // Pasar de String a int
+                System.out.println("Lo sentimos, el stock máximo de este producto es " + resultado_sentencia.getString(1));
+                correcto = false;
+            }
+        }
+        else{
+            System.out.println("Debes introducir una cantidad mayor que 0");
+            correcto = false;
+        }
+        
+        return correcto;
+    }
+
+
    
     public void imprimirContenidoTabla(String tabla) throws SQLException 
     {
@@ -160,6 +202,8 @@ public class MiBaseDatos{
         for(int i=1; i<=rsmd.getColumnCount(); i++){
             nombre_columnas = nombre_columnas + "|" + rsmd.getColumnName(i) + "|\t";
         }
+
+        System.out.println("Tabla " + tabla);
         System.out.println(nombre_columnas);     // Imprimir las columnas de la tabla
         
         //Imprimir el contenido
