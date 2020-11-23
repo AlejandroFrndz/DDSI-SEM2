@@ -54,6 +54,17 @@ public class Usuario{
             e.printStackTrace();
             System.out.println(colores.red + "Error borrando el pedido identificado por " + cpedido + colores.reset);
         }
+
+        try{
+            if(!base_datos.existePedido(cpedido)){
+                System.out.println("El pedido que intentaste borrar no existía");
+            }
+        }      
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            System.out.println(colores.red + "Error comprobando si existe el pedido identificado por " + cpedido + colores.reset);
+        }
     }
 
     //Función que ejecuta el cierre de sesión en la BD
@@ -68,11 +79,23 @@ public class Usuario{
 
     //Función para la creación del pedido
     private static void crearPedido(){
-        String cPedido, cCliente, opcion;
+        String cPedido = "", cCliente, opcion;
+        boolean existe = true;
         
-        
-        System.out.print(colores.cyan + "Introduzca el código del pedido: " + colores.reset);
-        cPedido = System.console().readLine();
+        while(existe){          // Pedir el pedido hasta que se introduzca uno que no existe
+            System.out.print(colores.cyan + "Introduzca el código del pedido: " + colores.reset);
+            cPedido = System.console().readLine();
+
+            try {
+                existe = base_datos.existePedido(cPedido);
+            } catch (Exception e) {
+                System.out.println(colores.red + "Error comprobando si existe el pedido" + colores.reset);
+            }
+
+            if(existe)
+                System.out.println("Por favor, introduzca un identificador de pedido no existente");
+        }
+
         System.out.print(colores.cyan + "Introduzca el código del cliente: " + colores.reset);
         cCliente = System.console().readLine();
 
@@ -134,39 +157,51 @@ public class Usuario{
 
     public static void aniadirDetalleProducto(String cPedido){
         String cProducto, cantidad = "";
-        boolean quedaStock = true;
+        boolean existeProducto = false, quedaStock = false;
         boolean stockCorrecto = false;
 
-        System.out.print(colores.cyan + "Introduzca el codigo del producto: " + colores.reset);
-        cProducto = System.console().readLine();
 
-        // Comprobar si quedan existencias del producto
-        try {
-            quedaStock = base_datos.hayStock(cProducto);
-        } catch (Exception e) {
-            System.out.println("Error comprobando el Stock del producto" + cProducto);
-        }
+        while(!existeProducto){
+            System.out.print(colores.cyan + "Introduzca el codigo del producto: " + colores.reset);
+            cProducto = System.console().readLine();
 
-        if(quedaStock){
-            // Pedir el Stock hasta que se introduzca un stock disponible
-            while(!stockCorrecto){
-                System.out.print(colores.cyan + "Introduzca la cantidad que desea: " + colores.reset);
-                cantidad = System.console().readLine();
-                
-                try{stockCorrecto = base_datos.stockSuficiente(cProducto, cantidad);}
-                catch(SQLException e){
-                    System.out.println("Hubo un error al comprobar el stock");
+            try { existeProducto = base_datos.existeProducto(cProducto);}       // Comprobar si existe el producto
+            catch (Exception e) {
+                System.out.println(colores.red + "Error comprobando si el producto " + cProducto + " existe" + colores.reset);
+            }
+
+            if(existeProducto){
+                // Comprobar si quedan existencias del producto
+                try { quedaStock = base_datos.hayStock(cProducto);} 
+                catch (Exception e) {
+                    System.out.println(colores.red + "Error comprobando el Stock del producto" + cProducto + colores.reset);
+                }
+
+                if(quedaStock){
+                    // Pedir el Stock hasta que se introduzca un stock disponible
+                    while(!stockCorrecto){
+                        System.out.print(colores.cyan + "Introduzca la cantidad que desea: " + colores.reset);
+                        cantidad = System.console().readLine();
+                        
+                        try{stockCorrecto = base_datos.stockSuficiente(cProducto, cantidad);}
+                        catch(SQLException e){
+                            System.out.println("Hubo un error al comprobar el stock");
+                        }
+                    }
+                    
+                    try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
+                    catch (SQLException e)
+                    {
+                        System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+                    }
+                }
+                else{
+                    System.out.println("Lo sentimos, no queda stock de este producto");
                 }
             }
-            
-            try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
-            catch (SQLException e)
-            {
-                System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+            else{
+                System.out.println("El producto " + cProducto + " no existe");
             }
-        }
-        else{
-            System.out.println("Lo sentimos, no queda stock de este producto");
         }
     }
 

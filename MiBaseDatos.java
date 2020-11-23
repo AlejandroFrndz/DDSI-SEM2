@@ -190,7 +190,32 @@ public class MiBaseDatos{
     }
 
 
-   
+    // Función que comprueba si un producto introducido existe o no
+    public boolean existeProducto(String cproducto) throws SQLException
+    {
+        resultado_sentencia = sentencia.executeQuery("SELECT * FROM Stock WHERE Cproducto=" + cproducto);  
+
+        if(!resultado_sentencia.next()){     // El método next devolverá un 0 si no hay contenido (no existe el producto)
+            return false;
+        }     
+        
+        return true;
+    }
+
+
+    // Función que comprueba si un pedido introducido existe o no
+    public boolean existePedido(String cpedido) throws SQLException
+    {
+        resultado_sentencia = sentencia.executeQuery("SELECT * FROM Pedido WHERE Cpedido=" + cpedido);  
+
+        if(!resultado_sentencia.next()){     // El método next devolverá un 0 si no hay contenido (no existe el pedido)
+            return false;
+        }     
+        
+        return true;
+    }
+
+
     public void imprimirContenidoTabla(String tabla) throws SQLException 
     {
         resultado_sentencia = sentencia.executeQuery("SELECT * FROM " + tabla);
