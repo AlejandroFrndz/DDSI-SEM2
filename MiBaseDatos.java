@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class MiBaseDatos{
     private Connection conexion = null;
@@ -132,6 +133,9 @@ public class MiBaseDatos{
     public void borrarPedido(String Cpedido) throws SQLException
     {
         //Borrar en cascada
+
+            DevolverStock(Cpedido);
+
             //Primero borrar en Detalle_pedido     
             sentencia.execute("DELETE FROM Detalle_pedido WHERE Cpedido=" + Cpedido);
            
@@ -215,6 +219,42 @@ public class MiBaseDatos{
         return true;
     }
 
+    //Función que comprueba si el producto a añadir a un pedido ya está en el carrito
+    public boolean productoEnCarrito(String cPedido, String cProducto) throws SQLException{
+        
+        resultado_sentencia = sentencia.executeQuery("SELECT * FROM Detalle_pedido WHERE Cpedido=" + cPedido + "AND Cproducto=" + cProducto);
+
+        if(!resultado_sentencia.next()){
+            return false;
+        }
+
+        return true;
+    }
+
+    //Función que aumenta la cantidad de un producto en el carrito
+    public void aumentarCantidad(String cPedido, String cProducto, String cantidad) throws SQLException{
+
+        //Decrementar el stock del producto añadido
+        sentencia.execute("UPDATE Stock SET Cantidad = Cantidad-" + cantidad + " WHERE Cproducto=" + cProducto);
+        //Incrementar la cantidad del producto añadido
+        sentencia.execute("UPDATE Detalle_pedido SET Cantidad = Cantidad+" + cantidad + " WHERE Cpedido=" + cPedido + " AND Cproducto=" + cProducto);
+    }
+
+    public void DevolverStock(String cPedido) throws SQLException{
+        resultado_sentencia = sentencia.executeQuery("SELECT Cproducto, Cantidad FROM Detalle_Pedido WHERE Cpedido=" + cPedido);
+        ArrayList<String> productos, cantidades;
+        productos = new ArrayList<>();
+        cantidades = new ArrayList<>();
+
+        while (resultado_sentencia.next()) {
+            productos.add(resultado_sentencia.getString(1));
+            cantidades.add(resultado_sentencia.getString(2));
+        }
+
+        for(int i = 0; i < productos.size(); i++){
+            sentencia.execute("UPDATE Stock SET Cantidad = Cantidad+" + cantidades.get(i) + " WHERE Cproducto=" + productos.get(i));
+        }
+    }
 
     public void imprimirContenidoTabla(String tabla) throws SQLException 
     {

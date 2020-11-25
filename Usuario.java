@@ -48,16 +48,10 @@ public class Usuario{
         System.out.print(colores.cyan + "Introduzca la clave del pedido que desea borrar: " + colores.reset);
         String cpedido = System.console().readLine();
 
-        try{base_datos.borrarPedido(cpedido);}      // Borrar el pedido identificado por "cpedido"
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            System.out.println(colores.red + "Error borrando el pedido identificado por " + cpedido + colores.reset);
-        }
-
         try{
             if(!base_datos.existePedido(cpedido)){
-                System.out.println("El pedido que intentaste borrar no existía");
+                System.out.println("El pedido no existe");
+                return;
             }
         }      
         catch (SQLException e)
@@ -65,6 +59,14 @@ public class Usuario{
             e.printStackTrace();
             System.out.println(colores.red + "Error comprobando si existe el pedido identificado por " + cpedido + colores.reset);
         }
+
+        try{base_datos.borrarPedido(cpedido);}      // Borrar el pedido identificado por "cpedido"
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            System.out.println(colores.red + "Error borrando el pedido identificado por " + cpedido + colores.reset);
+        }
+
     }
 
     //Función que ejecuta el cierre de sesión en la BD
@@ -159,6 +161,7 @@ public class Usuario{
         String cProducto, cantidad = "";
         boolean existeProducto = false, quedaStock = false;
         boolean stockCorrecto = false;
+        boolean enCarrito = false;
 
 
         while(!existeProducto){
@@ -189,10 +192,25 @@ public class Usuario{
                         }
                     }
                     
-                    try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
-                    catch (SQLException e)
-                    {
-                        System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+                    try {
+                        enCarrito = base_datos.productoEnCarrito(cPedido, cProducto);
+                    } catch (SQLException e) {
+                        System.out.println("Hubo un error comprobando el carrito");
+                    }
+
+                    if(enCarrito){
+                        try {
+                            base_datos.aumentarCantidad(cPedido,cProducto,cantidad);
+                        } catch (SQLException e) {
+                            System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+                        }
+                    }
+                    else{
+                        try{base_datos.insertarDetalle_pedido(cPedido, cProducto, cantidad);}
+                        catch (SQLException e)
+                        {
+                            System.out.println(colores.red + "Error insertando detalles del pedido " + cPedido + colores.reset);
+                        }
                     }
                 }
                 else{
