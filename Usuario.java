@@ -38,6 +38,7 @@ public class Usuario{
         try{base_datos.imprimirContenidoTabla("Stock");}
         catch (SQLException e)
         {
+            e.printStackTrace();
             System.out.println(colores.red + "Error imprimiendo las tablas"+ colores.reset);
         }
     }
@@ -130,6 +131,7 @@ public class Usuario{
                         base_datos.rollbackTo("Pedido");
                     } catch (SQLException e) {
                         e.printStackTrace();
+                        System.out.println(colores.red + "Error realizando RollBack" + colores.reset);
                     }
                     
                     break;
@@ -138,6 +140,7 @@ public class Usuario{
                         base_datos.rollback();
                     } catch (SQLException e) {
                         e.printStackTrace();
+                        System.out.println(colores.red + "Error realizando RollBack" + colores.reset);
                     }
                 
                     break;
@@ -214,11 +217,11 @@ public class Usuario{
                     }
                 }
                 else{
-                    System.out.println("Lo sentimos, no queda stock de este producto");
+                    System.out.println(colores.red + "Lo sentimos, no queda stock de este producto" + colores.reset);
                 }
             }
             else{
-                System.out.println("El producto " + cProducto + " no existe");
+                System.out.println(colores.red + "El producto " + cProducto + " no existe" + colores.reset);
             }
         }
     }
@@ -230,6 +233,7 @@ public class Usuario{
             base_datos.imprimirContenidoTabla("Detalle_pedido");
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println(colores.red + "Error imprimiendo tablas" + colores.reset);
         }
     }
     
