@@ -14,7 +14,6 @@ public class Usuario{
         try{base_datos.borrarTablas();}
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error borrando las tablas" + colores.reset);
         }
         
@@ -22,7 +21,6 @@ public class Usuario{
         try{base_datos.crearTablas();}
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error creando las tablas"+ colores.reset);
         }
 
@@ -30,7 +28,6 @@ public class Usuario{
         try{base_datos.insertarTuplasPredefinidas();}
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error insertando las tuplas predefinidas en Stock" + colores.reset);
         } 
 
@@ -38,7 +35,6 @@ public class Usuario{
         try{base_datos.imprimirContenidoTabla("Stock");}
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error imprimiendo las tablas"+ colores.reset);
         }
     }
@@ -57,14 +53,12 @@ public class Usuario{
         }      
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error comprobando si existe el pedido identificado por " + cpedido + colores.reset);
         }
 
         try{base_datos.borrarPedido(cpedido);}      // Borrar el pedido identificado por "cpedido"
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error borrando el pedido identificado por " + cpedido + colores.reset);
         }
 
@@ -75,7 +69,6 @@ public class Usuario{
         try{base_datos.cerrarConexion();}      // Cerrar la conexión con la BD
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error cerrando la conexión con la BD" + colores.reset);
         } 
     }
@@ -106,7 +99,6 @@ public class Usuario{
         try{base_datos.insertarPedido(cPedido, cCliente);}
         catch (SQLException e)
         {
-            e.printStackTrace();
             System.out.println(colores.red + "Error dando de alta pedido " + cPedido + colores.reset);
         } 
         
@@ -130,7 +122,6 @@ public class Usuario{
                     try {
                         base_datos.rollbackTo("Pedido");
                     } catch (SQLException e) {
-                        e.printStackTrace();
                         System.out.println(colores.red + "Error realizando RollBack" + colores.reset);
                     }
                     
@@ -139,7 +130,6 @@ public class Usuario{
                     try {
                         base_datos.rollback();
                     } catch (SQLException e) {
-                        e.printStackTrace();
                         System.out.println(colores.red + "Error realizando RollBack" + colores.reset);
                     }
                 
@@ -148,7 +138,6 @@ public class Usuario{
                     try {
                         base_datos.commit();
                     } catch (SQLException e) {
-                        e.printStackTrace();
                         System.out.println("Error al commitear el pedido");
                     }
                     
@@ -232,7 +221,6 @@ public class Usuario{
             base_datos.imprimirContenidoTabla("Pedido");
             base_datos.imprimirContenidoTabla("Detalle_pedido");
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println(colores.red + "Error imprimiendo tablas" + colores.reset);
         }
     }
@@ -253,7 +241,6 @@ public class Usuario{
                 try{base_datos.crearTablas();}
                 catch (SQLException e)
                 {
-                    e.printStackTrace();
                     System.out.println(colores.red + "Error creando las tablas"+ colores.reset);
                 }
 
@@ -261,7 +248,6 @@ public class Usuario{
                 try{base_datos.insertarTuplasPredefinidas();}
                 catch (SQLException e)
                 {
-                    e.printStackTrace();
                     System.out.println(colores.red + "Error insertando las tuplas predefinidas en Stock" + colores.reset);
                 } 
             }
