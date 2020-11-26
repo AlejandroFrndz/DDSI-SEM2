@@ -6,19 +6,19 @@ public class MiBaseDatos{
     private Statement sentencia;
     private ResultSet resultado_sentencia;
     private String usuario;
-    private String contraseña;
+    private String passwd;
     private String nombre_bd;
 
-    public MiBaseDatos(String nombre_bd, String usuario, String contraseña) {
+    public MiBaseDatos(String nombre_bd, String usuario, String passwd) {
         this.nombre_bd = nombre_bd;
         this.usuario = usuario;
-        this.contraseña = contraseña;
+        this.passwd = passwd;
     }
 
     public Boolean conectar(){
         try 
         {
-            conexion = DriverManager.getConnection(nombre_bd, usuario, contraseña);
+            conexion = DriverManager.getConnection(nombre_bd, usuario, passwd);
             conexion.setAutoCommit(false);
             if (conexion != null) {
                 System.out.println("\nTe has conectado a la BD " + nombre_bd + " con el usuario " + usuario + "\n");
