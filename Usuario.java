@@ -4,7 +4,7 @@ public class Usuario{
     // victor x0227576
     // paco x2233897
     // alex.fdz x6591260
-    private static String usuario = "x0227576";
+    private static String usuario = "x5938820";
     private static MiBaseDatos base_datos = new MiBaseDatos("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", usuario, usuario);
     private static Color colores = new Color();
 
@@ -17,7 +17,7 @@ public class Usuario{
             e.printStackTrace();
             System.out.println(colores.red + "Error borrando las tablas" + colores.reset);
         }
-
+        
         // Creación de las tablas
         try{base_datos.crearTablas();}
         catch (SQLException e)
@@ -242,7 +242,30 @@ public class Usuario{
             return;
         }
     
+        //Si no hay ninguna tabla, las creamos
+        try{
+            if(base_datos.mostrarNombreTablas().isEmpty())
+            {
+                try{base_datos.crearTablas();}
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                    System.out.println(colores.red + "Error creando las tablas"+ colores.reset);
+                }
 
+                // Inserción de 10 tuplas predefinidas en la tabla Stock
+                try{base_datos.insertarTuplasPredefinidas();}
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                    System.out.println(colores.red + "Error insertando las tuplas predefinidas en Stock" + colores.reset);
+                } 
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error comprobando si existen las tablas");
+        }
 
         opcion = "0";
         while(!opcion.equals("5")){
@@ -285,7 +308,7 @@ public class Usuario{
                 break;
 
                 default:
-                    System.out.println("Te equivocaste de opción, pulsa un número entre 1 y 4");
+                    System.out.println("Te equivocaste de opción, pulsa un número entre 1 y 5");
                 break;
             }
         }

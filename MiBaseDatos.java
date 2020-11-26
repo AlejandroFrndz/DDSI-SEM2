@@ -32,7 +32,7 @@ public class MiBaseDatos{
         }
     }
 
-    public void mostrarNombreTablas() throws SQLException         // FUNCIONA
+    public String mostrarNombreTablas() throws SQLException
     {
         //ExecuteQuery se usa para sentencias SQL que devuelven un resultado
         resultado_sentencia = sentencia.executeQuery("SELECT table_name FROM user_tables");
@@ -48,10 +48,11 @@ public class MiBaseDatos{
             else
                 nombre_tablas += ", " + nombre;
         }
-        System.out.println("Las tablas de la base de datos son las siguientes: " + nombre_tablas);
+        
+        return nombre_tablas;
     }
  
-    public void insertarTuplasPredefinidas() throws SQLException            // FUNCIONA
+    public void insertarTuplasPredefinidas() throws SQLException
     {
         //Insertar 10 tuplas predefinidas en la tabla Stock
         sentencia.execute("INSERT INTO Stock (Cproducto, Cantidad) VALUES ('1', '5')");
@@ -68,7 +69,7 @@ public class MiBaseDatos{
 
     }
 
-    public void crearTablas() throws SQLException               // FUNCIONA
+    public void crearTablas() throws SQLException
     {
         // Crear las tablas de nuestro SI
         // Tabla Stock
@@ -79,7 +80,7 @@ public class MiBaseDatos{
         sentencia.execute("CREATE TABLE Detalle_pedido(Cpedido CONSTRAINT CE_Detalle_Cpedido REFERENCES Pedido(Cpedido) , Cproducto CONSTRAINT CE_Detalle_Cproducto REFERENCES Stock(Cproducto), Cantidad INT CONSTRAINT cantidad_positiva_DETALLE CHECK (Cantidad > 0), CONSTRAINT CP_Detalle PRIMARY KEY(Cpedido, Cproducto) )");
     }
 
-    public void borrarTablas() throws SQLException              // FUNCIONA
+    public void borrarTablas() throws SQLException 
     {
         // Eliminar las tablas del SI
         // Tabla Detalle_pedido
@@ -267,8 +268,10 @@ public class MiBaseDatos{
         for(int i=1; i<=rsmd.getColumnCount(); i++){
             nombre_columnas = nombre_columnas + "|" + rsmd.getColumnName(i) + "|\t";
         }
+        
+        System.out.println("\n_____________________________________________");
+        System.out.println("               Tabla " + tabla);
 
-        System.out.println("Tabla " + tabla);
         System.out.println(nombre_columnas);     // Imprimir las columnas de la tabla
         
         //Imprimir el contenido
