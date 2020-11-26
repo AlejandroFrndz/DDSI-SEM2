@@ -242,14 +242,16 @@ public class Usuario{
             return;
         }
     
-        System.out.print(colores.blue); 
-        System.out.println("========================================================================================================================");
-        System.out.println("Menú principal");
-        System.out.println("========================================================================================================================");
+
 
         opcion = "0";
         while(!opcion.equals("5")){
-
+            System.out.print(colores.blue); 
+            System.out.println("========================================================================================================================");
+            System.out.println("Menú principal");
+            System.out.println("========================================================================================================================");
+            System.out.print(colores.reset); 
+            
             System.out.print(colores.purple); 
             System.out.println("\n1. Borrado y nueva creación de las tablas e inserción de 10 tuplas predefinidas en el código en la tabla Stock");
             System.out.println("2. Dar de alta nuevo pedido");
